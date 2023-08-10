@@ -1,0 +1,23 @@
+# Ignorar archivos y directorios generados por macOS
+.DS_Store
+
+# Ignorar entorno virtual de Python
+/venv/
+/env/
+/.venv/
+*.pyc
+__pycache__/
+
+# Ignorar archivos de configuración local
+*.env
+
+# Ignorar directorio de logs
+/logs/
+
+# Ignorar archivos de caché
+__pycache__/
+
+# Ignorar archivos de respaldo
+*.bak
+*.swp
+
