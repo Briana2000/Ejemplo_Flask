@@ -1,0 +1,8 @@
+# Archivo .editorconfig
+# Configuración de estilo para indentación
+
+# Todos los archivos
+[*]
+indent_style = tab
+indent_size = 4
+
