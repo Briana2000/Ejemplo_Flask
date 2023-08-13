@@ -2,9 +2,11 @@
 <html>
 <head>
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <title>Flask F-String Example</title>
 </head>
 <body>
     <h1>{{ doll }}</h1>
+	<button onclick="changeBackgroundColor()">Cambiar Color de Fondo</button>
 </body>
 </html>

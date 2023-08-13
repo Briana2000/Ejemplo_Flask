@@ -1,0 +1,26 @@
+/* Reset de estilos para garantizar consistencia en diferentes navegadores */
+body, h1, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos básicos para el cuerpo de la página */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Estilos para el encabezado h1 */
+h1 {
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Estilos para los párrafos */
+p {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
