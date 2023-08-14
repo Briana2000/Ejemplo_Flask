@@ -4,9 +4,69 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 	<script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <title>Flask F-String Example</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
 </head>
 <body>
-    <h1>{{ doll }}</h1>
-	<button onclick="changeBackgroundColor()">Cambiar Color de Fondo</button>
+	<h1 class ="text-center mt-5 mb-5"> Inventario de muñecas Barbie </h1>
+
+	<div class="container">
+		<div class="card shadow">
+			<div class="card-body">
+				<form action="" method="post">
+					<div class="row mb-3">
+						<div class="col">
+							<label> Nombre Barbie</label>
+							<input type="text" class="form-control mb-3" name = "dollname">
+						</div>
+						<div class="col">
+							<label> Tipo </label>
+							<input type="text" class="form-control mb-3" name = "type">
+						</div>
+						<div class="col">
+							<label> Precio </label>
+							<input type="text" class="form-control mb-3" name = "price">
+						</div>
+						<div class="col">
+							<label> Detalles </label>
+							<input type="text" class="form-control mb-3" name = "details">
+						</div>
+						<div class="col">
+							<button class="btn btn-primary mb-3 mt-4" type="submit">Guardar</button>
+						</div>
+					</div>
+
+				</form>
+
+				<!-- TABLA -->
+				<table class="table table-bordered">
+					<thead>
+						<th scope="col">Id</th>
+						<th scope="col">Nombre</th>
+						<th scope="col">Tipo</th>
+						<th scope="col">Precio</th>
+						<th scope="col">Detalles</th>
+						<th scope="col">Acciones</th>
+					</thead>
+			
+				<tbody>
+					<tr>
+						<td> 1 </td>
+						<td> {{ doll.Name }} </td>
+						<td> {{ doll.Type }} </td>
+						<td> {{ doll.Price }} </td>
+						<td> {{ doll.Details }} </td>
+						<td> <button class="btn btn-primary btn-sm" id=""> Editar </button> <a href ="#" class="btn btn-danger btn-sm"> Eliminar </a> </td>
+					</tr>
+				</tbody>
+			</table>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- <h1>{{ doll }}</h1> -->
+	<!-- <button onclick="changeBackgroundColor()">Cambiar Color de Fondo</button> -->
 </body>
 </html>
