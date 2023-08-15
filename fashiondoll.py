@@ -1,8 +1,8 @@
 from typing import Protocol
 from random import randint
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+#db = SQLAlchemy()
 
 
 class Doll(Protocol):
@@ -29,7 +29,7 @@ class Doll(Protocol):
 	def __str__():
 		...
 
-class FashionDoll(Doll, db.Model):
+class FashionDoll(Doll):#, db.Model):
 	"""	FashionDoll Class
 		Description:
 			Class for Fashion Dolls that implements the Doll Protocol
@@ -43,13 +43,15 @@ class FashionDoll(Doll, db.Model):
 			__init__ : None
 			__str__ : str
 	"""
+	''' DataBase Model
 	__tablename__ = 'fashion_dolls'
 	_id = db.Column(db.Integer, primary_key=True)
 	_name = db.Column(db.String(255), nullable=False)
 	_type = db.Column(db.String(255))
 	_price = db.Column(db.Float, nullable=False)
 	_details = db.Column(db.Text)
-	def __init__(self, id : int = 0, Name : str = "", Type : str = "", price : float = 0.0, details : str = "") -> None:
+	'''
+	def __init__(self, * , ID : int = 0, Name : str = "", Type : str = "", Price : float = 0.0, Details : str = "") -> None:
 		""" Constructor for FashionDoll Class
 			Parameters:
 				id : int
@@ -65,24 +67,54 @@ class FashionDoll(Doll, db.Model):
 				if id is 0, it will generate a random id
 				if price is not a float, it will cast it to float
 		"""
-		if id == 0:
-			id = randint(1000, 9999)
+		if ID == 0:
+			ID = randint(1000, 9999)
 		if Name == "":
 			Name = "Dumy Name"
 		if Type == "":
 			Type = "Dumy Type"
-		if price == 0.0:
-			price = 0.0
-		if details == "":
-			details = "Dumy Details"
-		self._id = id
+		if Price == 0.0:
+			Price = 0.0
+		if Details == "":
+			Details = "Dumy Details"
+		self._id = ID
 		self._name = Name
 		self._type = Type
-		self._price = (float)(price) # Cast to float
-		self._details = details
+		self._price = (float)(Price) # Cast to float
+		self._details = Details
 
 	def __str__(self) -> str:
 		return f"ID: {self._id}\nName: {self._name}\nType: {self._type}\nPrice: {self._price}\nDetails: {self._details}"
+	@property
+	def id(self) -> int:
+		return self._id
+	@property
+	def name(self) -> str:
+		return self._name
+	@property
+	def type(self) -> str:
+		return self._type
+	@property
+	def price(self) -> float:
+		return self._price
+	@property
+	def details(self) -> str:
+		return self._details
+	@id.setter
+	def id(self, id : int) -> None:
+		self._id = id
+	@name.setter
+	def name(self, Name : str) -> None:
+		self._name = Name
+	@type.setter
+	def type(self, Type : str) -> None:
+		self._type = Type
+	@price.setter
+	def price(self, price : float) -> None:
+		self._price = price
+	@details.setter
+	def details(self, details : str) -> None:
+		self._details = details
 
 if __name__ == "__main__":
 	# generate a set of 5 dumy FashionDolls
