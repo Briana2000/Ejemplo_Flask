@@ -21,3 +21,5 @@ __pycache__/
 *.bak
 *.swp
 
+# ignorar archivo de la base de datos de SQLite3
+database.db
