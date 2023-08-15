@@ -2,12 +2,17 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, render_template, request, redirect, url_for, flash
-#from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from fashiondoll import FashionDoll
-
-
-
+from dotenv import load_dotenv
+import os
+# pongamos la configuración en el aplicativo
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['Base_DIR'] = os.environ.get('Base_DIR')
+app.config['DEBUG'] = os.environ.get('DEBUG')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLAlchemy_DATABASE_URI')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
 
 
 # region Dommies
@@ -135,4 +140,4 @@ def create_doll() -> str:
 #endregion
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run()
