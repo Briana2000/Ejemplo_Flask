@@ -1,5 +1,9 @@
 from typing import Protocol
 from random import randint
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
 
 class Doll(Protocol):
 	"""	Doll Protocol
@@ -25,7 +29,7 @@ class Doll(Protocol):
 	def __str__():
 		...
 
-class FashionDoll(Doll):
+class FashionDoll(Doll, db.Model):
 	"""	FashionDoll Class
 		Description:
 			Class for Fashion Dolls that implements the Doll Protocol
@@ -39,6 +43,12 @@ class FashionDoll(Doll):
 			__init__ : None
 			__str__ : str
 	"""
+	__tablename__ = 'fashion_dolls'
+	_id = db.Column(db.Integer, primary_key=True)
+	_name = db.Column(db.String(255), nullable=False)
+	_type = db.Column(db.String(255))
+	_price = db.Column(db.Float, nullable=False)
+	_details = db.Column(db.Text)
 	def __init__(self, id : int = 0, Name : str = "", Type : str = "", price : float = 0.0, details : str = "") -> None:
 		""" Constructor for FashionDoll Class
 			Parameters:
