@@ -6,24 +6,33 @@ from flask_sqlalchemy import SQLAlchemy
 from fashiondoll import FashionDoll
 from dotenv import load_dotenv
 import os
-# pongamos la configuración en el aplicativo
+
+load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['Base_DIR'] = os.environ.get('Base_DIR')
-app.config['DEBUG'] = os.environ.get('DEBUG')
+app.config['DEBUG'] = os.environ.get('DEBUG', False)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLAlchemy_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
 
 
 # region Dommies
-dolls : list[FashionDoll] = []
-barbie : FashionDoll  = FashionDoll(Name="Barbie", Type="Fashion Doll", Price=1000, Details="Pink Dress")
-dolls.append(barbie)
-dolls.append(FashionDoll(Name="Ken", Type="Fashion Doll", Price=1000, Details="Blue Dress"))
-dolls.append(FashionDoll(Name="Cindy", Type="Fashion Doll", Price=1000, Details="Yellow Dress"))
-dolls.append(FashionDoll(Name="Cindy", Type="Fashion Doll", Price=1000, Details="Beach Dress"))
-dolls.append(FashionDoll(Name="Linda", Type="Fashion Doll", Price=1000, Details="Green Dress"))
+def dummy_dolls() -> list[FashionDoll]:
+	dolls : list[FashionDoll] = []
+	barbie : FashionDoll  = FashionDoll(Name="Barbie", Type="Fashion Doll", Price=1000, Details="Pink Dress")
+	dolls.append(barbie)
+	dolls.append(FashionDoll(Name="Ken", Type="Fashion Doll", Price=1000, Details="Blue Dress"))
+	dolls.append(FashionDoll(Name="Cindy", Type="Fashion Doll", Price=1000, Details="Yellow Dress"))
+	dolls.append(FashionDoll(Name="Cindy", Type="Fashion Doll", Price=1000, Details="Beach Dress"))
+	dolls.append(FashionDoll(Name="Linda", Type="Fashion Doll", Price=1000, Details="Green Dress"))
+	return dolls
+
+
+dolls : list[FashionDoll] = dummy_dolls()
+barbie : FashionDoll = dolls[0]
 # endregion
+
+#db = SQLAlchemy(app)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -140,4 +149,6 @@ def create_doll() -> str:
 #endregion
 
 if __name__ == '__main__':
-	app.run()
+	if app.config['DEBUG']:
+		app.run(debug=True, port=5000)
+	app.run(port=8080)
