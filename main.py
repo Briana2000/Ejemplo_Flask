@@ -25,6 +25,8 @@ def dummy_dolls() -> list[FashionDoll]:
 	dolls.append(FashionDoll(Name="Cindy", Type="Fashion Doll", Price=1000, Details="Beach Dress"))
 	dolls.append(FashionDoll(Name="Linda", Type="Fashion Doll", Price=1000, Details="Green Dress"))
 	return dolls
+#endregion
+
 #region DB_Context
 
 def Get_DB_Connection() -> sqlite3.Connection:
@@ -38,6 +40,12 @@ def Get_DB_Connection() -> sqlite3.Connection:
 	conn.row_factory = sqlite3.Row
 	return conn
 def get_post(post_id) -> FashionDoll:
+    """Obtiene una doll por su id
+    Args:
+		post_id (int): id de la doll a obtener
+	Return:
+		FashionDoll: Doll obtenida
+	"""
     conn = Get_DB_Connection()
     post = conn.execute('SELECT * FROM Doll WHERE id = ?',
                         (post_id,)).fetchone()
@@ -45,16 +53,33 @@ def get_post(post_id) -> FashionDoll:
     if post is None:
         abort(404)
     return FashionDoll(ID=post['id'], Name=post['name'], Type=post['type'], Price=post['price'], Details=post['details'])
+def delete_post(post_id) -> None:
+	if post_id is None or post_id == "":
+		#Evitamos errores al prohibir ingresar Null
+		return
+
+	conn = Get_DB_Connection()
+	post = conn.execute('SELECT * FROM Doll WHERE id = ?',
+					 (post_id,)).fetchone()
+
+	if post is None:
+		conn.close()
+		abort(404)
+	conn.execute('DELETE FROM Doll WHERE id = ?', (post_id,))
+	conn.commit()
+	conn.close()
 
 #endregion
 
 
-
+#region Dummy Data
 dolls : list[FashionDoll] = dummy_dolls()
 barbie : FashionDoll = dolls[0]
+g : FashionDoll = get_post(1)
+print(type(g))
+dolls.append(g)
 # endregion
 
-#db = SQLAlchemy(app)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -69,9 +94,6 @@ def about() -> str:
 # creemos un método para visualizar todas las dolls que existen
 @app.route('/dolls', methods=['GET'])
 def dolls_list() -> str:
-	g : FashionDoll = get_post(1)
-	print(type(g))
-	dolls.append(g)
 	return ''.join(str(doll)+'\n' for doll in dolls)
 
 # creemos un método para visualizar una doll en específico by id
@@ -91,6 +113,7 @@ def delete_doll_by_id(doll_id : int) -> str:
 	"""
 	if (d := next((doll for doll in dolls if doll.id == doll_id), None)):
 		dolls.remove(d)
+		delete_post(doll_id)
 		return f"Doll with id {doll_id} deleted"
 	else:
 		return f"Doll with id {doll_id} not found"
@@ -178,8 +201,5 @@ def create_doll() -> str:
 
 if __name__ == '__main__':
 	if app.config['DEBUG']:
-		g = get_post(1)
-		print(g)
-		#db.create_all()
 		app.run(debug=True, port=5000)
 	app.run(port=8080)
