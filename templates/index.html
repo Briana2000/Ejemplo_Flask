@@ -59,7 +59,7 @@
 							<td> {{ doll.type }} </td>
 							<td> {{ doll.price }} </td>
 							<td> {{ doll.details }} </td>
-							<td> <button class="btn btn-primary btn-sm" id="edit_btn"> Editar </button> <a onclick="eliminarElemento('{{doll.id}}')" class="btn btn-danger btn-sm"> Eliminar </a> </td>
+							<td> <button onclick="pantallaActualizar('{{doll.id}}')" class="btn btn-primary btn-sm" id="edit_btn"> Editar </button> <a onclick="eliminarElemento('{{doll.id}}')" class="btn btn-danger btn-sm"> Eliminar </a> </td>
 						</tr>
 					{% endfor %}
 				</tbody>
@@ -88,6 +88,12 @@
             	console.error('Hubo un error en la solicitud:', error);
         	});
         }
+
+		function pantallaActualizar(elementoId){
+			console.log(elementoId);
+			console.log('Se llamó la pantalla de actualizar');
+			//location.reload();
+		}
     </script>
 </body>
 </html>

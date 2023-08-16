@@ -124,7 +124,7 @@ def dolls_list() -> str:
 # desde el Front-end entonces se lo cambié, antes estaba como /dolls/id y se lo cambié a /doll/id
 
 # creemos un método para visualizar una doll en específico by id
-@app.route('/doll/<int:doll_id>', methods=['GET'])
+@app.route('/dolls/<int:doll_id>', methods=['GET'])
 def doll_by_id(doll_id : int) -> str:
 	return str(d) if (d := next((doll for doll in dolls if doll.id == doll_id), None)) else f"Doll with id {doll_id} not found"
 
@@ -151,7 +151,6 @@ def delete_doll_by_id(doll_id : int) -> str:
 
 #region Update
 
-
 @app.route('/dolls/<int:doll_id>/update_name/<string:doll_name>', methods=['PUT'])
 def update_doll_by_id(doll_id : int, doll_name : str) -> str:
 	"""Actualiza el nombre de una doll por su id
@@ -163,6 +162,7 @@ def update_doll_by_id(doll_id : int, doll_name : str) -> str:
 	"""
 	if (d := next((doll for doll in dolls if doll.id == doll_id), None)):
 		d.name = doll_name
+		update_doll(d, 'Name', doll_name)
 		return f"Doll with id {doll_id} updated"
 	else:
 		return f"Doll with id {doll_id} not found"
@@ -178,6 +178,7 @@ def update_doll_price_by_id(doll_id : int, doll_price : int) -> str:
 	"""
 	if (d := next((doll for doll in dolls if doll.id == doll_id), None)):
 		d.price = doll_price
+		update_doll(d, 'Price', doll_price)
 		return f"Doll with id {doll_id} updated"
 	else:
 		return f"Doll with id {doll_id} not found"
@@ -193,6 +194,7 @@ def update_doll_details_by_id(doll_id : int, doll_details : str) -> str:
 	"""
 	if (d := next((doll for doll in dolls if doll.id == doll_id), None)):
 		d.details = doll_details
+		update_doll(d, 'Details', doll_details)
 		return f"Doll with id {doll_id} updated"
 	else:
 		return f"Doll with id {doll_id} not found"
@@ -208,6 +210,7 @@ def update_doll_type_by_id(doll_id : int, doll_type : str) -> str:
 	"""
 	if (d := next((doll for doll in dolls if doll.id == doll_id), None)):
 		d.type = doll_type
+		update_doll(d, 'Type', doll_type)
 		return f"Doll with id {doll_id} updated"
 	else:
 		return f"Doll with id {doll_id} not found"
