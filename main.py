@@ -39,7 +39,7 @@ def Get_DB_Connection() -> sqlite3.Connection:
 		)
 	conn.row_factory = sqlite3.Row
 	return conn
-def get_post(post_id) -> FashionDoll:
+def get_post(post_id : int) -> FashionDoll:
     """Obtiene una doll por su id
     Args:
 		post_id (int): id de la doll a obtener
@@ -53,11 +53,10 @@ def get_post(post_id) -> FashionDoll:
     if post is None:
         abort(404)
     return FashionDoll(ID=post['id'], Name=post['name'], Type=post['type'], Price=post['price'], Details=post['details'])
-def delete_post(post_id) -> None:
+def delete_post(post_id : int) -> None:
 	if post_id is None or post_id == "":
 		#Evitamos errores al prohibir ingresar Null
 		return
-
 	conn = Get_DB_Connection()
 	post = conn.execute('SELECT * FROM Doll WHERE id = ?',
 					 (post_id,)).fetchone()
@@ -68,7 +67,6 @@ def delete_post(post_id) -> None:
 	conn.execute('DELETE FROM Doll WHERE id = ?', (post_id,))
 	conn.commit()
 	conn.close()
-
 #endregion
 
 
