@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, abort, render_template, request
 from fashiondoll import FashionDoll
 from dotenv import load_dotenv
+import sqlite3
 import os
 
 load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['Base_DIR'] = os.environ.get('Base_DIR')
+app.config['DATABASE'] = os.environ.get('DATABASE')
 app.config['DEBUG'] = os.environ.get('DEBUG', False)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLAlchemy_DATABASE_URI')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
 
 
 # region Dommies
@@ -26,6 +25,29 @@ def dummy_dolls() -> list[FashionDoll]:
 	dolls.append(FashionDoll(Name="Cindy", Type="Fashion Doll", Price=1000, Details="Beach Dress"))
 	dolls.append(FashionDoll(Name="Linda", Type="Fashion Doll", Price=1000, Details="Green Dress"))
 	return dolls
+#region DB_Context
+
+def Get_DB_Connection() -> sqlite3.Connection:
+	"""Obtiene una conexión a la base de datos
+	Returns:
+		sqlite3.Connection: Conexión a la base de datos
+	"""
+	conn =  sqlite3.connect(
+			app.config['DATABASE']
+		)
+	conn.row_factory = sqlite3.Row
+	return conn
+def get_post(post_id) -> FashionDoll:
+    conn = Get_DB_Connection()
+    post = conn.execute('SELECT * FROM Doll WHERE id = ?',
+                        (post_id,)).fetchone()
+    conn.close()
+    if post is None:
+        abort(404)
+    return FashionDoll(ID=post['id'], Name=post['name'], Type=post['type'], Price=post['price'], Details=post['details'])
+
+#endregion
+
 
 
 dolls : list[FashionDoll] = dummy_dolls()
@@ -47,6 +69,9 @@ def about() -> str:
 # creemos un método para visualizar todas las dolls que existen
 @app.route('/dolls', methods=['GET'])
 def dolls_list() -> str:
+	g : FashionDoll = get_post(1)
+	print(type(g))
+	dolls.append(g)
 	return ''.join(str(doll)+'\n' for doll in dolls)
 
 # creemos un método para visualizar una doll en específico by id
@@ -148,7 +173,13 @@ def create_doll() -> str:
 	return f"Doll with id {doll.id} created"
 #endregion
 
+
+
+
 if __name__ == '__main__':
 	if app.config['DEBUG']:
+		g = get_post(1)
+		print(g)
+		#db.create_all()
 		app.run(debug=True, port=5000)
 	app.run(port=8080)

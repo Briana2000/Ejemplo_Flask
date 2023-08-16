@@ -8,7 +8,7 @@ with open('schema.sql') as f:
 cur = connection.cursor()
 
 cur.execute("INSERT INTO Doll (id, name, type, price, details) VALUES (?,?,?,?,?)",
-                                (0, "Zero", "FashionDoll", 0.0, "First Doll")
+                                (1, "Zero", "FashionDoll", 0.0, "First Doll")
                                 )
 
 connection.commit()
