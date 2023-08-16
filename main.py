@@ -67,6 +67,29 @@ def delete_post(post_id : int) -> None:
 	conn.execute('DELETE FROM Doll WHERE id = ?', (post_id,))
 	conn.commit()
 	conn.close()
+def update_doll(doll : FashionDoll) -> None:
+        if doll is None:
+                #Evitamos errores al prohibir ingresar Null
+                return
+        conn = Get_DB_Connection()
+        conn.execute('UPDATE Doll SET name = ?, type = ?, price = ?, details = ? WHERE id = ?', (doll.Name, doll.Type, doll.Price, doll.Details, doll.ID))
+        conn.commit()
+        conn.close()
+def insert_doll(doll : FashionDoll) -> None:
+        if doll is None:
+                #Evitamos errores al prohibir ingresar Null
+                return
+        conn = Get_DB_Connection()
+        conn.execute('INSERT INTO Doll (name, type, price, details) VALUES (?, ?, ?, ?)', (doll.Name, doll.Type, doll.Price, doll.Details))
+        conn.commit()
+        conn.close()
+def get_all_dolls() -> list[FashionDoll]:
+        conn = Get_DB_Connection()
+        dolls : list[FashionDoll] = []
+        for row in conn.execute('SELECT * FROM Doll'):
+                dolls.append(FashionDoll(ID=row['id'], Name=row['name'], Type=row['type'], Price=row['price'], Details=row['details']))
+        conn.close()
+        return dolls
 #endregion
 
 
