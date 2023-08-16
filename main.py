@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, abort, render_template, request
+from flask import Flask, abort, render_template, request, url_for, redirect
 from fashiondoll import FashionDoll
 from dotenv import load_dotenv
 import sqlite3
@@ -26,6 +26,7 @@ def dummy_dolls() -> list[FashionDoll]:
 	dolls.append(FashionDoll(Name="Linda", Type="Fashion Doll", Price=1000, Details="Green Dress"))
 	return dolls
 #endregion
+
 
 #region DB_Context
 
@@ -80,7 +81,7 @@ def insert_doll(doll : FashionDoll) -> None:
                 #Evitamos errores al prohibir ingresar Null
                 return
         conn = Get_DB_Connection()
-        conn.execute('INSERT INTO Doll (name, type, price, details) VALUES (?, ?, ?, ?)', (doll.Name, doll.Type, doll.Price, doll.Details))
+        conn.execute('INSERT INTO Doll (name, type, price, details) VALUES (?, ?, ?, ?)', (doll.name, doll.type, doll.price, doll.details))
         conn.commit()
         conn.close()
 def get_all_dolls() -> list[FashionDoll]:
@@ -94,18 +95,19 @@ def get_all_dolls() -> list[FashionDoll]:
 
 
 #region Dummy Data
-dolls : list[FashionDoll] = dummy_dolls()
-barbie : FashionDoll = dolls[0]
-g : FashionDoll = get_post(1)
-print(type(g))
-dolls.append(g)
+dolls : list[FashionDoll] = get_all_dolls()
+#barbie : FashionDoll = dolls[0]
+#g : FashionDoll = get_post(1)
+#g : FashionDoll = get_all_dolls()
+#print(type(g))
+#dolls.append(g)
 # endregion
 
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index() -> str:
-	return render_template('index.html', doll=barbie)
+	return render_template('index.html', dolls = dolls)
 
 @app.route('/about', methods=['GET'])
 def about() -> str:
@@ -206,15 +208,17 @@ def update_doll_type_by_id(doll_id : int, doll_type : str) -> str:
 
 #region Create
 
-@app.route('/', methods=['POST'])
+@app.route('/doll', methods=['POST'])
 def create_doll() -> str:
 	"""Crea una nueva doll
 	Returns:
 		str: Mensaje de confirmación de creación
 	"""
 	doll = FashionDoll(Name=request.form['name'], Type=request.form['type'], Price=request.form['price'], Details=request.form['details'])
+	insert_doll(doll)
 	dolls.append(doll)
-	return f"Doll with id {doll.id} created"
+	#return f"Doll with id {doll.id} created"
+	return redirect(url_for('index'))
 #endregion
 
 

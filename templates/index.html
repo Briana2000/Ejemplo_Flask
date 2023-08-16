@@ -14,11 +14,11 @@
 	<div class="container">
 		<div class="card shadow">
 			<div class="card-body">
-				<form action="" method="post">
+				<form action="/doll" method="POST">
 					<div class="row mb-3">
 						<div class="col">
 							<label> Nombre Barbie</label>
-							<input type="text" class="form-control mb-3" name = "dollname">
+							<input type="text" class="form-control mb-3" name = "name">
 						</div>
 						<div class="col">
 							<label> Tipo </label>
@@ -51,14 +51,17 @@
 					</thead>
 			
 				<tbody>
-					<tr>
-						<td> 1 </td>
-						<td> {{ doll.Name }} </td>
-						<td> {{ doll.Type }} </td>
-						<td> {{ doll.Price }} </td>
-						<td> {{ doll.Details }} </td>
-						<td> <button class="btn btn-primary btn-sm" id=""> Editar </button> <a href ="#" class="btn btn-danger btn-sm"> Eliminar </a> </td>
-					</tr>
+
+					{% for doll in dolls %} 
+						<tr>
+							<td> {{ doll.id }} </td>
+							<td> {{ doll.name }} </td>
+							<td> {{ doll.type }} </td>
+							<td> {{ doll.price }} </td>
+							<td> {{ doll.details }} </td>
+							<td> <button class="btn btn-primary btn-sm" id=""> Editar </button> <a href="{{url_for('delete_doll_by_id', doll_id=doll.id)}}" class="btn btn-danger btn-sm"> Eliminar </a> </td>
+						</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 			</div>
