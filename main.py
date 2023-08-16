@@ -119,14 +119,19 @@ def about() -> str:
 def dolls_list() -> str:
 	return ''.join(str(doll)+'\n' for doll in dolls)
 
+# ***** NOTA - CAMBIO
+# ***** Este método de acá como tenía el mismo url que el de delete_doll_by_id me hacía conflicto a la hora de eliminar una barbie
+# desde el Front-end entonces se lo cambié, antes estaba como /dolls/id y se lo cambié a /doll/id
+
 # creemos un método para visualizar una doll en específico by id
-@app.route('/dolls/<int:doll_id>', methods=['GET'])
+@app.route('/doll/<int:doll_id>', methods=['GET'])
 def doll_by_id(doll_id : int) -> str:
 	return str(d) if (d := next((doll for doll in dolls if doll.id == doll_id), None)) else f"Doll with id {doll_id} not found"
 
+
 #region Delete
 
-@app.route('/dolls/<int:doll_id>', methods=['DELETE'])
+@app.route('/dolls/<int:doll_id>', methods=['GET', 'DELETE'])
 def delete_doll_by_id(doll_id : int) -> str:
 	"""Elimina una doll por su id
 	Args:
@@ -137,7 +142,8 @@ def delete_doll_by_id(doll_id : int) -> str:
 	if (d := next((doll for doll in dolls if doll.id == doll_id), None)):
 		dolls.remove(d)
 		delete_post(doll_id)
-		return f"Doll with id {doll_id} deleted"
+		#return f"Doll with id {doll_id} deleted"
+		return redirect(url_for('index'))
 	else:
 		return f"Doll with id {doll_id} not found"
 #endregion
