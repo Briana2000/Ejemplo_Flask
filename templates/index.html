@@ -59,7 +59,7 @@
 							<td> {{ doll.type }} </td>
 							<td> {{ doll.price }} </td>
 							<td> {{ doll.details }} </td>
-							<td> <button class="btn btn-primary btn-sm" id=""> Editar </button> <a href="{{url_for('delete_doll_by_id', doll_id=doll.id)}}" class="btn btn-danger btn-sm"> Eliminar </a> </td>
+							<td> <button class="btn btn-primary btn-sm" id="edit_btn"> Editar </button> <a onclick="eliminarElemento('{{doll.id}}')" class="btn btn-danger btn-sm"> Eliminar </a> </td>
 						</tr>
 					{% endfor %}
 				</tbody>
@@ -68,6 +68,26 @@
 		</div>
 
 	</div>
-
+	<script>
+        function eliminarElemento(elementoId) {
+			console.log(elementoId);
+            fetch('/dolls/'+elementoId, {
+                method: 'DELETE',
+            })
+            .then(response => {
+            if (response.ok) {
+                console.log('Elemento eliminado correctamente');
+                // Recarga la página
+                location.reload();
+            } else {
+				location.reload();
+                console.error('Error al eliminar el elemento');
+            }
+			})
+        	.catch(error => {
+            	console.error('Hubo un error en la solicitud:', error);
+        	});
+        }
+    </script>
 </body>
 </html>

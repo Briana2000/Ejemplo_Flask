@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, abort, render_template, request, url_for, redirect
+from flask import Flask, abort, jsonify, render_template, request, url_for, redirect
 from fashiondoll import FashionDoll
 from dotenv import load_dotenv
 import sqlite3
@@ -95,7 +95,7 @@ def get_all_dolls() -> list[FashionDoll]:
 
 
 #region Dummy Data
-dolls : list[FashionDoll] = get_all_dolls()
+dolls : list[FashionDoll] = get_all_dolls() + dummy_dolls()
 #barbie : FashionDoll = dolls[0]
 #g : FashionDoll = get_post(1)
 #g : FashionDoll = get_all_dolls()
@@ -131,7 +131,7 @@ def doll_by_id(doll_id : int) -> str:
 
 #region Delete
 
-@app.route('/dolls/<int:doll_id>', methods=['GET', 'DELETE'])
+@app.route('/dolls/<int:doll_id>', methods=['DELETE'])
 def delete_doll_by_id(doll_id : int) -> str:
 	"""Elimina una doll por su id
 	Args:
@@ -143,7 +143,8 @@ def delete_doll_by_id(doll_id : int) -> str:
 		dolls.remove(d)
 		delete_post(doll_id)
 		#return f"Doll with id {doll_id} deleted"
-		return redirect(url_for('index'))
+		# return 200 ok
+		return jsonify({'message': 'Doll deleted'}, 200)
 	else:
 		return f"Doll with id {doll_id} not found"
 #endregion
