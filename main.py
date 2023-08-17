@@ -68,14 +68,28 @@ def delete_post(post_id : int) -> None:
 	conn.execute('DELETE FROM Doll WHERE id = ?', (post_id,))
 	conn.commit()
 	conn.close()
-def update_doll(doll : FashionDoll) -> None:
-        if doll is None:
-                #Evitamos errores al prohibir ingresar Null
-                return
+def update_doll(doll : FashionDoll, attribute_name : str, new_value) -> None:
+    if doll is None:
+            #Evitamos errores al prohibir ingresar Null
+            return
+
+    attribute_map = {
+        "Name": "name",
+        "Type": "type",
+        "Price": "price",
+        "Details": "details"
+    }
+
+    if attribute_name in attribute_map:
+        column_name = attribute_map[attribute_name]
         conn = Get_DB_Connection()
-        conn.execute('UPDATE Doll SET name = ?, type = ?, price = ?, details = ? WHERE id = ?', (doll.Name, doll.Type, doll.Price, doll.Details, doll.ID))
+        update_query = f'UPDATE Doll SET {column_name} = ? WHERE id = ?'
+        conn.execute(update_query, (new_value, doll.id))
         conn.commit()
         conn.close()
+    else:
+        print("Invalid attribute name provided.")
+	
 def insert_doll(doll : FashionDoll) -> None:
         if doll is None:
                 #Evitamos errores al prohibir ingresar Null

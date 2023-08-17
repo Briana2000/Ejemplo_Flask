@@ -2,8 +2,9 @@
 <html>
 <head>
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-	<script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <title>Flask F-String Example</title>
+	<!--<script src="{{ url_for('static', filename='js/script.js') }}"></script>-->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Flask Example</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
@@ -59,9 +60,42 @@
 							<td> {{ doll.type }} </td>
 							<td> {{ doll.price }} </td>
 							<td> {{ doll.details }} </td>
-							<td> <button onclick="pantallaActualizar('{{doll.id}}')" class="btn btn-primary btn-sm" id="edit_btn"> Editar </button> <a onclick="eliminarElemento('{{doll.id}}')" class="btn btn-danger btn-sm"> Eliminar </a> </td>
+							<td> <button class="btn btn-primary btn-sm" id="btn-edit{{doll.id}}" data-bs-toggle="modal" data-bs-target="#modal{{doll.id}}"> Editar </button> <a onclick="eliminarElemento('{{doll.id}}')" class="btn btn-danger btn-sm"> Eliminar </a> </td>
 						</tr>
+
+						<!-- MODAL EDIT -->
+						<div class="modal fade" id="modal{{doll.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+							  <div class="modal-content">
+								<div class="modal-header">
+								  <h1 class="modal-title fs-5" id="exampleModalLabel"> Editar Registro {{doll.id}}</h1>
+								  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<form id="editForm{{doll.id}}" data-doll-id="{{doll.id}}">
+										<label> Nombre Barbie </label>
+										<input type="text" class="form-control mb-3" name="name" value="{{doll.name}}" data-old-value="{{doll.name}}">
+						
+										<label> Tipo </label>
+										<input type="text" class="form-control mb-3" name="type" value="{{doll.type}}" data-old-value="{{doll.type}}">
+						
+										<label> Precio </label>
+										<input type="text" class="form-control mb-3" name="price" value="{{doll.price}}" data-old-value="{{doll.price}}">
+
+										<label> Detalles </label>
+										<input type="text" class="form-control mb-3" name="details" value="{{doll.details}}" data-old-value="{{doll.details}}">
+									
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary" onclick="guardarCambios('{{doll.id}}')"> Guardar </button>
+								</div>
+							</form>
+						</div>
+					  </div>
+					</div>
+
 					{% endfor %}
+
 				</tbody>
 			</table>
 			</div>
@@ -89,11 +123,52 @@
         	});
         }
 
-		function pantallaActualizar(elementoId){
-			console.log(elementoId);
-			console.log('Se llamó la pantalla de actualizar');
-			//location.reload();
+		function actualizarElemento(elementoId, campo, nuevoValor, antiguoValor) {
+    		if (nuevoValor !== antiguoValor) {
+        		const ruta = `/dolls/${elementoId}/update_${campo}/${encodeURIComponent(nuevoValor)}`;
+        
+        		fetch(ruta, {
+            		method: 'PUT',
+        		})
+        		.then(response => {
+            		if (response.ok) {
+                		console.log(`Campo "${campo}" actualizado correctamente`);
+                		location.reload();
+            		} else {
+                		location.reload();
+                		console.error(`Error al actualizar el campo "${campo}"`);
+            		}
+        		})
+        		.catch(error => {
+            		console.error('Hubo un error en la solicitud:', error);
+        		});
+    		}
 		}
+
+		function guardarCambios(dollId) {
+
+			const form = document.getElementById(`editForm${dollId}`);
+			
+			const name = form.elements['name'].value;
+			const oldName = form.elements['name'].getAttribute('data-old-value');
+			
+			const type = form.elements['type'].value;
+			const oldType = form.elements['type'].getAttribute('data-old-value');
+			
+			const price = form.elements['price'].value;
+			const oldPrice = form.elements['price'].getAttribute('data-old-value');
+
+			const details = form.elements['details'].value;
+			const oldDetails = form.elements['details'].getAttribute('data-old-value');
+
+			actualizarElemento(dollId, 'name', name, oldName);
+			actualizarElemento(dollId, 'type', type, oldType);
+			actualizarElemento(dollId, 'price', price, oldPrice);
+			actualizarElemento(dollId, 'details', details, oldDetails);
+
+			$(`#modal${dollId}`).modal('hide');
+		}
+
     </script>
 </body>
 </html>
