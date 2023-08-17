@@ -15,19 +15,6 @@ app.config['DATABASE'] = os.environ.get('DATABASE')
 app.config['DEBUG'] = os.environ.get('DEBUG', False)
 
 
-# region Dommies
-def dummy_dolls() -> list[FashionDoll]:
-	dolls : list[FashionDoll] = []
-	barbie : FashionDoll  = FashionDoll(Name="Barbie", Type="Fashion Doll", Price=1000, Details="Pink Dress")
-	dolls.append(barbie)
-	dolls.append(FashionDoll(Name="Ken", Type="Fashion Doll", Price=1000, Details="Blue Dress"))
-	dolls.append(FashionDoll(Name="Cindy", Type="Fashion Doll", Price=1000, Details="Yellow Dress"))
-	dolls.append(FashionDoll(Name="Cindy", Type="Fashion Doll", Price=1000, Details="Beach Dress"))
-	dolls.append(FashionDoll(Name="Linda", Type="Fashion Doll", Price=1000, Details="Green Dress"))
-	return dolls
-#endregion
-
-
 #region DB_Context
 
 def Get_DB_Connection() -> sqlite3.Connection:
@@ -108,40 +95,39 @@ def get_all_dolls() -> list[FashionDoll]:
 #endregion
 
 
-#region Dummy Data
-dolls : list[FashionDoll] = get_all_dolls() + dummy_dolls()
-#barbie : FashionDoll = dolls[0]
-#g : FashionDoll = get_post(1)
-#g : FashionDoll = get_all_dolls()
-#print(type(g))
-#dolls.append(g)
+#region  Data
+dolls : list[FashionDoll] = get_all_dolls()
 # endregion
 
 
-
+#region API
 @app.route('/', methods=['GET', 'POST'])
 def index() -> str:
+	"""Ruta principal de la aplicación
+	Returns:
+		str: HTML de la página principal
+	"""
 	return render_template('index.html', dolls = dolls)
 
-@app.route('/about', methods=['GET'])
-def about() -> str:
-	about_content : str = "Prueba de envío de strings XD."
-	return render_template('about.html', message=about_content)
-
-# creemos un método para visualizar todas las dolls que existen
 @app.route('/dolls', methods=['GET'])
 def dolls_list() -> str:
+	"""Obtiene la lista de dolls
+	Returns:
+		str: Lista de dolls
+	"""
 	return ''.join(str(doll)+'\n' for doll in dolls)
 
-# ***** NOTA - CAMBIO
-# ***** Este método de acá como tenía el mismo url que el de delete_doll_by_id me hacía conflicto a la hora de eliminar una barbie
-# desde el Front-end entonces se lo cambié, antes estaba como /dolls/id y se lo cambié a /doll/id
 
-# creemos un método para visualizar una doll en específico by id
 @app.route('/dolls/<int:doll_id>', methods=['GET'])
 def doll_by_id(doll_id : int) -> str:
+	"""Obtiene una doll por su id
+	Args:
+		doll_id (int): id de la doll a obtener
+	Returns:
+		str: Doll obtenida o mensaje de que no se encontró la doll
+	"""
 	return str(d) if (d := next((doll for doll in dolls if doll.id == doll_id), None)) else f"Doll with id {doll_id} not found"
-
+#endregion
 
 #region Delete
 
@@ -249,6 +235,6 @@ def create_doll() -> str:
 
 
 if __name__ == '__main__':
-	if app.config['DEBUG']:
+	if app.config['DEBUG'] == 'True':
 		app.run(debug=True, port=5000)
 	app.run(port=8080)
